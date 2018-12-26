@@ -1,6 +1,6 @@
 {
   "name": "@whitetrefoil/unistore-bind",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Tiny binder for unistore.",
   "main": "lib/main",
   "typings": "lib/main.d.ts",
@@ -57,6 +57,7 @@
     "@whitetrefoil/deferred": "^0.1.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "cpy-cli": "^2.0.0",
     "cross-env": "^5.2.0",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0",
