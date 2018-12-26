@@ -12,7 +12,7 @@ it('bind', () => {
     test: 'asdf',
   })
 
-  const myAction = bind(store, 'myActionName', () => ({
+  const myAction = bind(store, 'myActionName', (state) => ({
     test: 'zxcv',
   }))
 
@@ -25,48 +25,87 @@ it('bind', () => {
   expect(store.getState().test).to.eql('zxcv')
 })
 
-it('bind unknown', () => {
+it('bindWithArg', () => {
 
   const store = createStore<IState>({
     test: 'asdf',
   })
 
-  const myAction = bind(store, () => ({
+  const myAction = bind(store, 'myActionName', (state: IState, val: string) => ({
+    test: val,
+  }))
+
+  store.subscribe((state, action) => {
+    expect((action as any).name).to.eql('myActionName')
+  })
+
+  myAction('123')
+
+  expect(store.getState().test).to.eql('123')
+})
+
+it('bindAsync', async() => {
+
+  const store = createStore<IState>({
+    test: 'asdf',
+  })
+
+  const myAction = bind(store, 'myActionName', async() => ({
     test: 'zxcv',
   }))
 
   store.subscribe((state, action) => {
-    expect((action as any).name).to.eql('unknown')
+    expect((action as any).name).to.eql('myActionName')
   })
 
-  myAction()
+  await myAction()
 
   expect(store.getState().test).to.eql('zxcv')
 })
 
-it('bind named', () => {
+it('bindAsync', async() => {
 
   const store = createStore<IState>({
     test: 'asdf',
   })
 
-  const myAction = bind(store, function myActionFn() {
-    return { test: 'zxcv' }
-  })
+  const myAction = bind(store, 'myActionName', async() => ({
+    test: 'zxcv',
+  }))
 
   store.subscribe((state, action) => {
-    expect((action as any).name).to.eql('myActionFn')
+    expect((action as any).name).to.eql('myActionName')
   })
 
-  myAction()
+  await myAction()
 
   expect(store.getState().test).to.eql('zxcv')
 })
 
+it('bindAsyncWithArgs', async() => {
+
+  const store = createStore<IState>({
+    test: 'asdf',
+  })
+
+  const myAction = bind(store, 'myActionName', async(state: IState, val: string) => ({
+    test: val,
+  }))
+
+  store.subscribe((state, action) => {
+    expect((action as any).name).to.eql('myActionName')
+  })
+
+  await myAction('123')
+
+  expect(store.getState().test).to.eql('123')
+})
+
 describe('Binder', () => {
+
   it('bind', () => {
 
-    const store = createStore<IState>({
+    const store  = createStore<IState>({
       test: 'asdf',
     })
     const binder = new Binder(store)
@@ -84,42 +123,22 @@ describe('Binder', () => {
     expect(store.getState().test).to.eql('zxcv')
   })
 
-  it('bind unknown', () => {
+  it('bindAsync', async() => {
 
-    const store = createStore<IState>({
+    const store  = createStore<IState>({
       test: 'asdf',
     })
     const binder = new Binder(store)
 
-    const myAction = binder.bind(() => ({
+    const myAction = binder.bind('myActionName', async() => ({
       test: 'zxcv',
     }))
 
     store.subscribe((state, action) => {
-      expect((action as any).name).to.eql('unknown')
+      expect((action as any).name).to.eql('myActionName')
     })
 
-    myAction()
-
-    expect(store.getState().test).to.eql('zxcv')
-  })
-
-  it('bind named', () => {
-
-    const store = createStore<IState>({
-      test: 'asdf',
-    })
-    const binder = new Binder(store)
-
-    const myAction = binder.bind(function myActionFn() {
-      return { test: 'zxcv' }
-    })
-
-    store.subscribe((state, action) => {
-      expect((action as any).name).to.eql('myActionFn')
-    })
-
-    myAction()
+    await myAction()
 
     expect(store.getState().test).to.eql('zxcv')
   })
